@@ -21,7 +21,17 @@ const getItems = async (req, res) => {
  * @param{*}req
  * @param{*}res 
  */ 
-const getItem = (req, res) => { };
+const getItem = async (req, res) => { 
+    try{
+        req=matcheData(req);
+        const{id}=req;
+        const data=await trackModel.findById(id);
+        res.send({data});
+    }catch(e)
+    {
+        handleHttpError(res,"Error_get_item")
+    }
+};
 
 /** 
  * Insertar un resgistro
@@ -37,8 +47,6 @@ const createItem = async (req, res) => {
         handleHttpError(res, "Erros_Create_Items");
     }
 
-
-
  };
  
 /** 
@@ -46,13 +54,32 @@ const createItem = async (req, res) => {
  * @param{*}req
  * @param{*}res 
  */
-const updateItem = (req, res) => { };
+const updateItem = async (req, res) => {
+    try{
+        const {id, ...body}=matcheData(req);
+
+        const data=await trackModel.findOneAndUpdate(id,body);
+        res.send({data});
+    }catch(e){
+        handleHttpError(res, "Erros_Update_Items");
+    }
+ };
 
 /** 
  * Eliminar un registro
  * @param{*}req
  * @param{*}res 
  */
-const deleteItem = (req, res) => { };
+const deleteItem = async(req, res) => {
+    try{
+        req=matcheData(req);
+        const{id}=req;
+        const data=await trackModel.deleteOne({_id:id});
+        res.send({data});
+    }catch(e)
+    {
+        handleHttpError(res,"Error_Delete_item")
+    }
+ };
 
 module.exports = { getItems, getItem, createItem, updateItem, deleteItem };
